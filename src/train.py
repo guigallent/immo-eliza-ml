@@ -58,6 +58,8 @@ def linear_regression(X_train_scaled: np.ndarray, y_train: pd.Series):
     """
     model = LinearRegression()
     model.fit(X_train_scaled, y_train)
+
+    print("\nLinear Regression model trained.")
     return model
 
 
@@ -76,6 +78,7 @@ def decision_tree_regression(X_train_scaled: np.ndarray, y_train: pd.Series, max
     model = DecisionTreeRegressor(max_depth=max_depth, random_state=RANDOM_STATE)
     model.fit(X_train_scaled, y_train)
 
+    print(f"\nDecision Tree Regressor trained with max_depth={max_depth}.")
     return model
 
 
@@ -92,10 +95,10 @@ def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_e
     - model: Trained Random Forest Regressor model.
     """
 
-    
     model = RandomForestRegressor(n_estimators=n_estimators, random_state=RANDOM_STATE)
     model.fit(X_train_scaled, y_train)
 
+    print(f"\nRandom Forest Regressor trained with n_estimators={n_estimators}.")
     return model
 
 def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimators: int = 100, max_depth: int = 6, learning_rate: float = 0.05):
@@ -109,4 +112,6 @@ def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimat
         random_state=RANDOM_STATE
     )
     model.fit(X_train_scaled, y_train)
+
+    print(f"\nXGBoost Regressor trained with n_estimators={n_estimators}, max_depth={max_depth}, learning_rate={learning_rate}.")
     return model
