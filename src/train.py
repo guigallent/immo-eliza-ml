@@ -25,6 +25,7 @@ def split_data(df: pd.DataFrame, test_size: float = 0.2, random_state: int = RAN
     - y_train: Training target variable (price).
     - y_test: Testing target variable (price).
     """
+
     X = df.drop("price", axis=1)
     y = df["price"]
     
@@ -46,6 +47,7 @@ def scale_data(X_train_processed: pd.DataFrame, X_test_processed: pd.DataFrame) 
     - X_test_scaled: Scaled testing features.
     - scaler: Fitted StandardScaler, for use on new data at inference time.
     """
+
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train_processed)
     X_test_scaled = scaler.transform(X_test_processed)
@@ -53,9 +55,8 @@ def scale_data(X_train_processed: pd.DataFrame, X_test_processed: pd.DataFrame) 
     return X_train_scaled, X_test_scaled, scaler
 
 def linear_regression(X_train_scaled: np.ndarray, y_train: pd.Series):
-    """
-    Trains a regression model on the scaled training data.
-    """
+    """Trains a regression model on the scaled training data."""
+
     model = LinearRegression()
     model.fit(X_train_scaled, y_train)
 
@@ -71,10 +72,14 @@ def decision_tree_regression(X_train_scaled: np.ndarray, y_train: pd.Series, min
     - X_train_scaled: Scaled training features.
     - y_train: Training target variable (price).
     - max_depth: The maximum depth of the tree.
+    - min_samples_split: The minimum number of samples required to split an internal node.
+    - min_samples_leaf: The minimum number of samples required to be at a leaf node.
+    - ccp_alpha: Complexity parameter used for Minimal Cost-Complexity Pruning.
     
     Returns:
     - model: Trained Decision Tree Regressor model.
     """
+
     model = DecisionTreeRegressor(max_depth=max_depth, min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf, ccp_alpha=ccp_alpha, random_state=RANDOM_STATE)
     model.fit(X_train_scaled, y_train)
 
@@ -90,6 +95,10 @@ def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_e
     - X_train_scaled: Scaled training features.
     - y_train: Training target variable (price).
     - n_estimators: The number of trees in the forest.
+    - min_samples_split: The minimum number of samples required to split an internal node.
+    - min_samples_leaf: The minimum number of samples required to be at a leaf node.
+    - max_features: The number of features to consider when looking for the best split.
+    - max_depth: The maximum depth of the tree.
     
     Returns:
     - model: Trained Random Forest Regressor model.
@@ -104,7 +113,23 @@ def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_e
 def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, subsample: float = 0.9, reg_lambda: float = 10, reg_alpha: float = 0, n_estimators: int = 1200, min_child_weight: int = 1, max_depth: int = 7, learning_rate: float = 0.03, colsample_bytree: float = 0.7):
     """
     Trains an XGBoost Regressor on the scaled training data.
+    
+    Parameters:
+    - X_train_scaled: Scaled training features.
+    - y_train: Training target variable (price).
+    - subsample: The fraction of observations to be used for fitting each tree.
+    - reg_lambda: L2 regularization term on weights.
+    - reg_alpha: L1 regularization term on weights.
+    - n_estimators: The number of trees in the forest.
+    - min_child_weight: Minimum sum of instance weight needed in a child.
+    - max_depth: The maximum depth of the tree.
+    - learning_rate: Step size shrinkage used in update to prevents overfitting.
+    - colsample_bytree: Fraction of columns to be considered for each split.
+
+    Returns:
+    - model: Trained XGBoost Regressor model.
     """
+    
     model = XGBRegressor(
         n_estimators=n_estimators,
         max_depth=max_depth,
