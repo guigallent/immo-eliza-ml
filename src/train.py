@@ -63,7 +63,7 @@ def linear_regression(X_train_scaled: np.ndarray, y_train: pd.Series):
     return model
 
 
-def decision_tree_regression(X_train_scaled: np.ndarray, y_train: pd.Series, max_depth: int = 3):
+def decision_tree_regression(X_train_scaled: np.ndarray, y_train: pd.Series, min_samples_split: int = 10, min_samples_leaf: int = 16, max_depth: int = None):
     """
     Trains a Decision Tree Regressor on the scaled training data.
     
@@ -75,14 +75,14 @@ def decision_tree_regression(X_train_scaled: np.ndarray, y_train: pd.Series, max
     Returns:
     - model: Trained Decision Tree Regressor model.
     """
-    model = DecisionTreeRegressor(max_depth=max_depth, random_state=RANDOM_STATE)
+    model = DecisionTreeRegressor(max_depth=max_depth, min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf, random_state=RANDOM_STATE)
     model.fit(X_train_scaled, y_train)
 
-    print(f"\nDecision Tree Regressor trained with max_depth={max_depth}.")
+    print(f"\nDecision Tree Regressor trained with max_depth={max_depth}, min_samples_split={min_samples_split}, min_samples_leaf={min_samples_leaf}.")
     return model
 
 
-def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimators: int = 100):
+def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimators: int = 200, min_samples_split: int = 2, min_samples_leaf: int = 2):
     """
     Trains a Random Forest Regressor on the scaled training data.
     
@@ -95,13 +95,13 @@ def random_forest_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_e
     - model: Trained Random Forest Regressor model.
     """
 
-    model = RandomForestRegressor(n_estimators=n_estimators, random_state=RANDOM_STATE)
+    model = RandomForestRegressor(n_estimators = n_estimators, min_samples_split = min_samples_split, min_samples_leaf = min_samples_leaf, random_state = RANDOM_STATE)
     model.fit(X_train_scaled, y_train)
 
     print(f"\nRandom Forest Regressor trained with n_estimators={n_estimators}.")
     return model
 
-def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimators: int = 100, max_depth: int = 6, learning_rate: float = 0.05):
+def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, subsample: float = 0.8, reg_lambda: float = 2, reg_alpha: float = 1, n_estimators: int = 500, max_depth: int = 5, learning_rate: float = 0.05, colsample_bytree: float = 0.6):
     """
     Trains an XGBoost Regressor on the scaled training data.
     """
@@ -109,6 +109,10 @@ def xgboost_regression(X_train_scaled: np.ndarray, y_train: pd.Series, n_estimat
         n_estimators=n_estimators,
         max_depth=max_depth,
         learning_rate=learning_rate,
+        subsample=subsample,
+        reg_lambda=reg_lambda,
+        reg_alpha=reg_alpha,
+        colsample_bytree=colsample_bytree,
         random_state=RANDOM_STATE
     )
     model.fit(X_train_scaled, y_train)
