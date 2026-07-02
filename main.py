@@ -5,7 +5,7 @@ from src.config import RANDOM_STATE
 from src.clean import clean_data
 from src.preprocess import preprocess_data
 from src.train import split_data, scale_data, linear_regression, decision_tree_regression, random_forest_regression, xgboost_regression
-from src.evaluate import evaluate_model, print_evaluation
+from src.evaluate import cross_validate_model, evaluate_model, print_cross_validation_results, print_evaluation
 
 def main():
     """
@@ -51,19 +51,24 @@ def main():
     print("\nEvaluating models on the test set:")
 
     linear_metrics = evaluate_model(linear, X_train_scaled, y_train, X_test_scaled, y_test)
+    cross_val_linear = cross_validate_model(linear, X_train_scaled, y_train, cv=5)
     print_evaluation("Linear Regression", linear_metrics)
-
+    print_cross_validation_results("Linear Regression", cross_val_linear)
 
     decision_tree_metrics = evaluate_model(decision_tree, X_train_scaled, y_train, X_test_scaled, y_test)
+    cross_val_decision_tree = cross_validate_model(decision_tree, X_train_scaled, y_train, cv=5)
     print_evaluation("Decision Tree Regressor", decision_tree_metrics)
-
+    print_cross_validation_results("Decision Tree Regressor", cross_val_decision_tree)
 
     random_forest_metrics = evaluate_model(random_forest, X_train_scaled, y_train, X_test_scaled, y_test)
+    cross_val_random_forest = cross_validate_model(random_forest, X_train_scaled, y_train, cv=5)
     print_evaluation("Random Forest Regressor", random_forest_metrics)
-
+    print_cross_validation_results("Random Forest Regressor", cross_val_random_forest)
 
     xgboost_metrics = evaluate_model(xgboost, X_train_scaled, y_train, X_test_scaled, y_test)
+    cross_val_xgboost = cross_validate_model(xgboost, X_train_scaled, y_train, cv=5)
     print_evaluation("XGBoost Regressor", xgboost_metrics)
+    print_cross_validation_results("XGBoost Regressor", cross_val_xgboost)
 
 
 if __name__ == "__main__":
