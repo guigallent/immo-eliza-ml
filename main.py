@@ -10,12 +10,14 @@ from src.evaluate import evaluate_model, print_evaluation
 def main():
     """
     Pipeline:
-    Scrape property listings (async, all provinces)
-    Save listings to property_listings.csv
-    Reload listings CSV and extract property URLs
-    Scrape property details for each URL (async)
-    Join listings + details on property_id
-    Export final dataset to scraped_properties.csv
+    1. Import the raw data
+    2. Clean the data
+    3. Split the data into training and testing sets
+    4. Preprocess the features (encoding categorical variables, imputing missing values, etc.)
+    5. Scale the data sets using StandardScaler
+    6. Train multiple regression models
+    7. Save the trained models (.joblib files)
+    8. Evaluate their performance on the test set
     """ 
 
     df = pd.read_csv("./data/properties_database.csv")
@@ -28,20 +30,21 @@ def main():
     X_test_processed, _ = preprocess_data(X_test, encoders=fitted_encoders)
 
     X_train_scaled, X_test_scaled, scaler = scale_data(X_train_processed, X_test_processed)
+    joblib.dump(scaler, "models/scaler.joblib")
 
     linear = linear_regression(X_train_scaled, y_train)
     joblib.dump(linear, "models/linear.joblib")
     print("Linear Regression model saved as 'models/linear.joblib'.")
 
-    decision_tree = decision_tree_regression(X_train_scaled, y_train, min_samples_split = 10, min_samples_leaf = 16, max_depth = None)
+    decision_tree = decision_tree_regression(X_train_scaled, y_train, min_samples_split=40, min_samples_leaf=16, max_depth=20, ccp_alpha= 0.1)
     joblib.dump(decision_tree, "models/decision_tree.joblib")
     print("Decision Tree Regressor model saved as 'models/decision_tree.joblib'.")
 
-    random_forest = random_forest_regression(X_train_scaled, y_train, n_estimators=200, min_samples_split=2, min_samples_leaf=2)
+    random_forest = random_forest_regression(X_train_scaled, y_train, n_estimators=300, min_samples_split=2, min_samples_leaf=1, max_features='sqrt', max_depth=30)
     joblib.dump(random_forest, "models/random_forest.joblib")
     print("Random Forest Regressor model saved as 'models/random_forest.joblib'.")
 
-    xgboost = xgboost_regression(X_train_scaled, y_train, subsample=0.8, reg_lambda=2, reg_alpha=1, n_estimators=500, max_depth=5, learning_rate=0.05, colsample_bytree=0.6)
+    xgboost = xgboost_regression(X_train_scaled, y_train, subsample=0.9, reg_lambda=10, reg_alpha=0, n_estimators=1200, min_child_weight=1, max_depth=7, learning_rate=0.03, colsample_bytree=0.7)
     joblib.dump(xgboost, "models/xgboost.joblib")
     print("XGBoost Regressor model saved as 'models/xgboost.joblib'.")
 
