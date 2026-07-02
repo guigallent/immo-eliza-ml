@@ -105,6 +105,8 @@ def encode_property_state(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def encode_onehot(df: pd.DataFrame, column: str, encoder: OneHotEncoder = None) -> tuple[pd.DataFrame, OneHotEncoder]:
+    """One-hot encoding of a categorical column. If an encoder is provided, it will be used to transform the data; otherwise, a new encoder will be fitted."""
+    
     if encoder is None:
         encoder = OneHotEncoder(drop = "first", sparse_output = False, handle_unknown = "ignore")
         encoded = encoder.fit_transform(df[[column]])
@@ -122,6 +124,8 @@ def encode_onehot(df: pd.DataFrame, column: str, encoder: OneHotEncoder = None) 
     return df, encoder
 
 def preprocess_data(df: pd.DataFrame, encoders: dict = None) -> tuple[pd.DataFrame, dict]:
+    """It applies the preprocessing steps to the DataFrame."""
+
     df = encode_epc_score(df)
     df = encode_property_state(df)
 
