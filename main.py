@@ -33,15 +33,15 @@ def main():
     joblib.dump(linear, "models/linear.joblib")
     print("Linear Regression model saved as 'models/linear.joblib'.")
 
-    decision_tree = decision_tree_regression(X_train_scaled, y_train, max_depth=8)
+    decision_tree = decision_tree_regression(X_train_scaled, y_train, min_samples_split = 10, min_samples_leaf = 16, max_depth = None)
     joblib.dump(decision_tree, "models/decision_tree.joblib")
     print("Decision Tree Regressor model saved as 'models/decision_tree.joblib'.")
 
-    random_forest = random_forest_regression(X_train_scaled, y_train, n_estimators=200)
+    random_forest = random_forest_regression(X_train_scaled, y_train, n_estimators=200, min_samples_split=2, min_samples_leaf=2)
     joblib.dump(random_forest, "models/random_forest.joblib")
     print("Random Forest Regressor model saved as 'models/random_forest.joblib'.")
 
-    xgboost = xgboost_regression(X_train_scaled, y_train, n_estimators=200, max_depth=6, learning_rate=0.05)
+    xgboost = xgboost_regression(X_train_scaled, y_train, subsample=0.8, reg_lambda=2, reg_alpha=1, n_estimators=500, max_depth=5, learning_rate=0.05, colsample_bytree=0.6)
     joblib.dump(xgboost, "models/xgboost.joblib")
     print("XGBoost Regressor model saved as 'models/xgboost.joblib'.")
 
