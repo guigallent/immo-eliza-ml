@@ -53,7 +53,7 @@ immo-eliza-ml/
 - `predict.py` loads the trained model and fitted preprocessing artifacts, and predicts the price of a new property according to the user's input.
 
 
-## 🔀 Pipeline Overview
+## 🔀 Pipeline overview
 
 The pipeline is executed through `main.py`:
 
@@ -98,30 +98,30 @@ Once artifacts are saved, `predict.py` can reload them and generate predictions 
 5. Run `predict.py` to get a price prediction for a new property.
 
 
-## 📊 Results & Model Choices
+## 📊 Results & model choices
 
-To evaluate the impact of data cleaning on model performance, I compared results from an early iteration (before removing price outliers and implausible sub-€40k house listings) against the final, more thoroughly cleaned dataset. Here is a simplified table with the results:
+To evaluate the impact of data cleaning on model performance, I compared results from an early iteration (before removing price outliers, implausible sub-€40k house listings, and some columns that did not contribute much to determining price) against the final, more thoroughly cleaned dataset. Here is a simplified table with the results:
 
 | Model | Stage | MAE | RMSE | MAPE | R² Test | R² Gap | CV Mean R² | CV Std |
 |---|---|---|---|---|---|---|---|---|
 | **Linear Regression** | Before | €123,996.22 | €231,689.87 | 34.85% | 0.5341 | 0.0258 | 0.5450 | 0.0350 |
-| | After | €80,307.45 | €106,695.93 | 28.61% | 0.5725 | 0.0284 | 0.5901 | 0.0119 |
+| | After | €80,432.44 | €106,908.26 | 28.61% | 0.5708 | 0.0286 | 0.5888 | 0.0119 |
 | **Decision Tree** | Before | €123,829.51 | €236,881.19 | 33.98% | 0.5130 | 0.1552 | 0.5250 | 0.0653 |
-| | After | €80,837.55 | €110,456.49 | 28.13% | 0.5419 | 0.1440 | 0.5452 | 0.0186 |
+| | After | €80,837.61 | €109,696.74 | 27.80% | 0.5481 | 0.1345 | 0.5509 | 0.0237 |
 | **Random Forest** | Before | €96,457.65 | €193,563.51 | 28.03% | 0.6748 | 0.2809 | 0.6717 | 0.0405 |
-| | After | €66,281.10 | €91,724.55 | 24.19% | 0.6841 | 0.2714 | 0.6727 | 0.0157 |
+| | After | €65,010.55 | €90,378.88 | 23.31% | 0.6933 | 0.2633 | 0.6807 | 0.0152 |
 | **XGBoost** | Before | €86,380.68 | €174,088.48 | 23.63% | 0.7370 | 0.2360 | 0.7109 | 0.0500 |
-| | **After** | **€58,340.26** | **€82,989.90** | **20.15%** | **0.7414** | 0.2242 | **0.7359** | **0.0184** |
+| | **After** | **€58,079.14** | **€82,635.61** | **19.89%** | **0.7436** | 0.2079 | **0.7332** | **0.0191** |
 
-Cleaning the dataset more thoroughly clearly improved every model. This is most visible in RMSE, which roughly halved across the board, and in cross-validation stability, where standard deviations dropped by 2–3 times. This indicates the earlier iteration's cross-validation scores were partly inflated by some noisy rows rather than genuine model performance.
+Cleaning the dataset more thoroughly clearly improved every model. This is most visible in RMSE, which roughly halved across the board—a result of both model improvement and the mathematical effect of removing price outliers that previously distorted the squared error metrics. In addition, cross-validation stability improved significantly, with standard deviations dropping by 2–3 times. This indicates that the earlier iteration's high CV variance was driven by noisy rows randomly disrupting specific folds, rather than consistent model performance.
 
-**XGBoost was the best-performing model** in both iterations and was selected as the model to deploy, combining the lowest error metrics (MAE, RMSE, MAPE) with the highest R² and the most stable cross-validation scores among all four models tested.
+**XGBoost was the best-performing model** in both iterations and was selected as the model to deploy in the next Immo Eliza project. It combines the lowest error metrics (MAE, RMSE, MAPE) with the highest R² among all four models tested and a strong cross-validation performance.
 
-The R² Gap column, however, may seem counterintuitive. Linear Regression has the smallest gap (0.0284) because it is too simple to overfit and not because it is the best model (its R² of 0.5725 is the weakest of the four). Decision Tree, on the other hand, has a smaller gap than XGBoost (0.1440 vs. 0.2242), which it may appear as less overfitting. However, its test R² (0.5419) is actually the *lowest* of all four models. This implies that it is not generalizing better, but rather not learning much in either the train or test set.
+The R² Gap column, however, may seem counterintuitive. Linear Regression has the smallest gap (0.0258) because it is too simple to overfit and not because it is the best model (its R² of 0.5708 is the weakest of the four). Decision Tree, on the other hand, has a smaller gap than XGBoost (0.1345 vs. 0.2079), which it may appear as less overfitting. However, its test R² (0.5481) is actually the *lowest* of all four models. This implies that it is not generalizing better, but rather not learning much in either the train or test set.
 
-XGBoost's gap (0.2242) means it is still overfitting, even after tuning. What justifies choosing it anyway is that its test-set performance is the highest by a clear margin, *and* its cross-validation scores are both the highest (0.7359) and the most stable (std 0.0184).
+XGBoost's gap (0.2079) means it is still overfitting, even after tuning. This, in fact, is a common issue when using XGBoost models and dealing with it would require further fine-tuning of its hyperparameters. What justifies choosing it anyway is that its test-set performance is the highest by a clear margin, *and* its cross-validation scores are both the highest (0.7332) and the most stable (std 0.0191).
 
-Random Forest is the most consistent model across folds, with the lowest CV standard deviation (0.0157) of the four. Its test R² (0.6841) is also the second-best of the group. However, it is the clearest overfitting case of the four, as its gap (0.2714) is the largest, and still underperforms XGBoost on every test metric.
+Random Forest is the most consistent model across folds, with the lowest CV standard deviation (0.0152) of the four. Its test R² (0.6933) is also the second-best of the group. However, it is the clearest overfitting case of the four, as its gap (0.2633) is the largest, and still underperforms XGBoost on every test metric.
 
 
 ## 🔧 Possible improvements
@@ -138,7 +138,7 @@ Right now, preprocessing and model training are handled by separate, manually-se
 
 ### 2. Add postal code back as a feature
 
-`postal_code` was dropped early in this project in favor of latitude/longitude to simplify the encoding. However, it can be very useful in the next Immo Eliza project for the user to enter geographical information more easily.
+`postal_code` was dropped early in this project in favor of latitude/longitude to simplify the encoding. However, it can be very useful in the next Immo Eliza project for the user to provide geographical information more intuitively.
 
 ### 3. A more robust `predict.py`
 
