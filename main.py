@@ -29,8 +29,12 @@ def main():
     X_train_processed, fitted_encoders = preprocess_data(X_train)
     X_test_processed, _ = preprocess_data(X_test, encoders=fitted_encoders)
 
+    joblib.dump(fitted_encoders, "models/encoders.joblib")
+    print("Fitted encoders saved as 'models/encoders.joblib'.")
+
     X_train_scaled, X_test_scaled, scaler = scale_data(X_train_processed, X_test_processed)
     joblib.dump(scaler, "models/scaler.joblib")
+    print("Fitted scaler saved as 'models/scaler.joblib'.")
 
     linear = linear_regression(X_train_scaled, y_train)
     joblib.dump(linear, "models/linear.joblib")
