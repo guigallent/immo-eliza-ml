@@ -33,13 +33,13 @@ def main():
     X_test_processed, _ = preprocess_data(X_test, encoders=fitted_encoders)
 
     fitted_encoders["train_columns"] = list(X_train_processed.columns)
-    joblib.dump(fitted_encoders, "models/encoders.joblib")
-    print("Fitted encoders saved as 'models/encoders.joblib'.")
+    joblib.dump(fitted_encoders, "artifacts/encoders.joblib")
+    print("Fitted encoders saved as 'artifacts/encoders.joblib'.")
 
     # 5. Scale the data sets using StandardScaler
     X_train_scaled, X_test_scaled, scaler = scale_data(X_train_processed, X_test_processed)
-    joblib.dump(scaler, "models/scaler.joblib")
-    print("Fitted scaler saved as 'models/scaler.joblib'.")
+    joblib.dump(scaler, "artifacts/scaler.joblib")
+    print("Fitted scaler saved as 'artifacts/scaler.joblib'.")
 
     # 6. Train multiple regression models (Linear Regression, Decision Tree Regressor, Random Forest Regressor, XGBoost Regressor) and save them as .joblib files
     linear = linear_regression(X_train_scaled, y_train)
