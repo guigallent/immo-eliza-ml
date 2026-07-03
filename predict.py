@@ -1,6 +1,6 @@
 import pandas as pd
 import joblib
-from preprocess import preprocess_data
+from src import preprocess_data
 
 MODEL_PATH = "models/xgboost.joblib"
 ENCODERS_PATH = "artifacts/encoders.joblib"
@@ -30,10 +30,7 @@ BINARY_FIELDS = ["terrace", "garden", "garage", "swimming_pool"]
 
 INT_FIELDS = ["facades", "bedrooms", "bathrooms", "toilets"]
 
-FLOAT_FIELDS = ["livable_surface", "latitude", "longitude",
-                 "distance_from_train_stations_by_foot",
-                 "distance_from_elementary_school_by_foot",
-                 "distance_from_high_school_by_foot"]
+FLOAT_FIELDS = ["livable_surface", "latitude", "longitude"]
 
 
 def load_artifacts(model_path: str = MODEL_PATH, encoders_path: str = ENCODERS_PATH):
@@ -150,9 +147,6 @@ def prompt_new_property() -> pd.DataFrame:
     data["livable_surface"] = _prompt_float("livable_surface (m²)")
     data["latitude"] = _prompt_float("latitude")
     data["longitude"] = _prompt_float("longitude")
-    data["distance_from_train_stations_by_foot"] = _prompt_float("distance_from_train_stations_by_foot (meters)")
-    data["distance_from_elementary_school_by_foot"] = _prompt_float("distance_from_elementary_school_by_foot (meters)")
-    data["distance_from_high_school_by_foot"] = _prompt_float("distance_from_high_school_by_foot (meters)")
 
     data["facades"] = _prompt_int("facades")
     data["bedrooms"] = _prompt_int("bedrooms")
