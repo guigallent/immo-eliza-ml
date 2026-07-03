@@ -19,7 +19,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     cols_to_drop = {
         "property_id": "Unique identifier without predictive power",
         "city": "Location information to be retreived with lat/long",
-        "postal_code": "Location information to be retreived with lat/long"
+        "postal_code": "Location information to be retreived with lat/long",
+        "distance_from_train_stations_by_foot": "Not that relevant for price prediction",
+        "distance_from_elementary_school_by_foot": "Not that relevant for price prediction",
+        "distance_from_high_school_by_foot": "Not that relevant for price prediction"
     }
     cols_present = [c for c in cols_to_drop if c in df.columns]
     df = df.drop(columns=cols_present)
