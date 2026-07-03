@@ -4,7 +4,7 @@
 
 ## 📖 Description
 
-**Immo Eliza ML** is a machine learning (ML) pipeline built to predict the price of residential properties in Belgium. The goal of this solo project was to use the scikit-learn library in order to **build a complete ML pipeline that goes from raw scraped listings to trained and evaluated regression models.**
+**Immo Eliza ML** is a machine learning (ML) pipeline built to predict the price of residential properties in Belgium. The goal of this solo project was to use the `scikit-learn` library in order to **build a complete ML pipeline that goes from raw scraped listings to trained and evaluated regression models.**
 
 This is the third project in the Immo Eliza series. Property listings were first collected in a separate collaborative scraping project, then explored in a collaborative data analysis project (correlations, visualizations, first hypotheses about price drivers), before this project turned those insights into predictive models.
 
@@ -59,26 +59,26 @@ The pipeline is executed through `main.py`:
 
 ```
 Raw scraped data (properties_database.csv)
-          |
-          v
+        |
+        v
 clean_data() → drop irrelevant columns, duplicates, invalid prices, outliers
-          |
-          v
+        |
+        v
 split_data() → train / test split (80/20)
-          |
-          v
+        |
+        v
 preprocess_data() → EPC & property state encoding, one-hot encoding
-          |
-          v
+        |
+        v
 scale_data() → StandardScaler (fit on train, transform test)
-          |
-          v
+        |
+        v
 Train models → Linear Regression, Decision Tree, Random Forest, XGBoost
-          |
-          v
+        |
+        v
 Save models & preprocessing artifacts (joblib) → models/ , artifacts/
-          |
-          v
+        |
+        v
 Evaluate on test set → MAE, RMSE, R², cross-validation
 ```
 
@@ -95,25 +95,25 @@ Once artifacts are saved, `predict.py` can reload them and generate predictions 
 
 4. Run `main.py` to clean the data, train the models, and save the trained models and preprocessing artifacts.
 
-5. Run `predict.py` to get a price prediction for a new property, either by answering the interactive prompts in the terminal or by pointing it at a CSV of new listings.
+5. Run `predict.py` to get a price prediction for a new property.
 
 
 ## 📊 Results & Model Choices
 
 To evaluate the impact of data cleaning on model performance, I compared results from an early iteration (before removing price outliers and implausible sub-€40k house listings) against the final, more thoroughly cleaned dataset.
 
-| Model | Stage | MAE | Median AE | RMSE | MAPE | R² Test | R² Train | R² Gap | CV Mean R² | CV Std |
-|---|---|---|---|---|---|---|---|---|---|---|
-| **Linear Regression** | Before | €123,996.22 | €79,435.11 | €231,689.87 | 34.85% | 0.5341 | 0.5600 | 0.0258 | 0.5450 | 0.0350 |
-| | After | €80,307.45 | €62,832.87 | €106,695.93 | 28.61% | 0.5725 | 0.6009 | 0.0284 | 0.5901 | 0.0119 |
-| **Decision Tree** | Before | €123,829.51 | €70,329.41 | €236,881.19 | 33.98% | 0.5130 | 0.6682 | 0.1552 | 0.5250 | 0.0653 |
-| | After | €80,837.55 | €59,102.94 | €110,456.49 | 28.13% | 0.5419 | 0.6859 | 0.1440 | 0.5452 | 0.0186 |
-| **Random Forest** | Before | €96,457.65 | €55,465.37 | €193,563.51 | 28.03% | 0.6748 | 0.9557 | 0.2809 | 0.6717 | 0.0405 |
-| | After | €66,281.10 | €48,946.74 | €91,724.55 | 24.19% | 0.6841 | 0.9555 | 0.2714 | 0.6727 | 0.0157 |
-| **XGBoost** | Before | €86,380.68 | €44,583.97 | €174,088.48 | 23.63% | 0.7370 | 0.9730 | 0.2360 | 0.7109 | 0.0500 |
-| | **After** | **€58,340.26** | **€41,122.06** | **€82,989.90** | **20.15%** | **0.7414** | 0.9656 | 0.2242 | **0.7359** | **0.0184** |
+| Model | Stage | MAE | RMSE | MAPE | R² Test | R² Gap | CV Mean R² | CV Std |
+|---|---|---|---|---|---|---|---|---|
+| **Linear Regression** | Before | €123,996.22 | €231,689.87 | 34.85% | 0.5341 | 0.0258 | 0.5450 | 0.0350 |
+| | After | €80,307.45 | €106,695.93 | 28.61% | 0.5725 | 0.0284 | 0.5901 | 0.0119 |
+| **Decision Tree** | Before | €123,829.51 | €236,881.19 | 33.98% | 0.5130 | 0.1552 | 0.5250 | 0.0653 |
+| | After | €80,837.55 | €110,456.49 | 28.13% | 0.5419 | 0.1440 | 0.5452 | 0.0186 |
+| **Random Forest** | Before | €96,457.65 | €193,563.51 | 28.03% | 0.6748 | 0.2809 | 0.6717 | 0.0405 |
+| | After | €66,281.10 | €91,724.55 | 24.19% | 0.6841 | 0.2714 | 0.6727 | 0.0157 |
+| **XGBoost** | Before | €86,380.68 | €174,088.48 | 23.63% | 0.7370 | 0.2360 | 0.7109 | 0.0500 |
+| | **After** | **€58,340.26** | **€82,989.90** | **20.15%** | **0.7414** | 0.2242 | **0.7359** | **0.0184** |
 
-Cleaning the dataset more thoroughly (trimming implausible cheap houses before the outlier percentile cut, and tightening the price filter) improved every model, most visibly in RMSE — roughly halved across the board — and in cross-validation stability, where standard deviations dropped by 2–3 times. This indicates the earlier iteration's cross-validation scores were partly inflated by noisy, high-leverage rows rather than genuine model performance.
+Cleaning the dataset more thoroughly improved every model, most visibly in RMSE — roughly halved across the board — and in cross-validation stability, where standard deviations dropped by 2–3 times. This indicates the earlier iteration's cross-validation scores were partly inflated by noisy, high-leverage rows rather than genuine model performance.
 
 **XGBoost was the best-performing model** in both iterations and was selected as the model to deploy, combining the lowest error metrics (MAE, RMSE, MAPE) with the highest R² and the most stable cross-validation scores among all four models tested.
 
