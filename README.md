@@ -138,7 +138,7 @@ Right now, preprocessing and model training are handled by separate, manually-se
 
 ### 2. Add postal code back as a feature
 
-`postal_code` was dropped early in this project in favor of latitude/longitude, to simplify the encoding. However, it can be very useful in the next Immo Eliza project for the user to enter geographical information more easily.
+`postal_code` was dropped early in this project in favor of latitude/longitude to simplify the encoding. However, it can be very useful in the next Immo Eliza project for the user to enter geographical information more easily.
 
 ### 3. A more robust `predict.py`
 
