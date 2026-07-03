@@ -113,15 +113,15 @@ To evaluate the impact of data cleaning on model performance, I compared results
 | **XGBoost** | Before | €86,380.68 | €174,088.48 | 23.63% | 0.7370 | 0.2360 | 0.7109 | 0.0500 |
 | | **After** | **€58,340.26** | **€82,989.90** | **20.15%** | **0.7414** | 0.2242 | **0.7359** | **0.0184** |
 
-Cleaning the dataset more thoroughly improved every model. This is most visible in RMSE, which roughly halved across the board, and in cross-validation stability, where standard deviations dropped by 2–3 times. This indicates the earlier iteration's cross-validation scores were partly inflated by noisy, high-leverage rows rather than genuine model performance.
+Cleaning the dataset more thoroughly clearly improved every model. This is most visible in RMSE, which roughly halved across the board, and in cross-validation stability, where standard deviations dropped by 2–3 times. This indicates the earlier iteration's cross-validation scores were partly inflated by some noisy rows rather than genuine model performance.
 
 **XGBoost was the best-performing model** in both iterations and was selected as the model to deploy, combining the lowest error metrics (MAE, RMSE, MAPE) with the highest R² and the most stable cross-validation scores among all four models tested.
 
-The R² Gap column, however, may be counterintuitive. Linear Regression has the smallest gap (0.0284) because it is too simple to overfit and not because it is the best model (its R² of 0.5725 is the weakest of the four). Decision Tree, on the other hand, has a smaller gap than XGBoost (0.1440 vs. 0.2242), which it may appear as less overfitting. However, its test R² (0.5419) is actually the *lowest* of all four models. This implies that it is not generalizing better, but rather not learning much in either the train or test set.
+The R² Gap column, however, may seem counterintuitive. Linear Regression has the smallest gap (0.0284) because it is too simple to overfit and not because it is the best model (its R² of 0.5725 is the weakest of the four). Decision Tree, on the other hand, has a smaller gap than XGBoost (0.1440 vs. 0.2242), which it may appear as less overfitting. However, its test R² (0.5419) is actually the *lowest* of all four models. This implies that it is not generalizing better, but rather not learning much in either the train or test set.
 
-XGBoost's gap (0.2242) means it is still fitting the training data considerably better than it predicts on unseen data — a real sign of overfitting, even after tuning. What justifies choosing it anyway is that its test-set performance is the highest by a clear margin, *and* its cross-validation scores are both the highest (0.7359) and the most stable (std 0.0184). In other words, the gap shows XGBoost has more room it could still give back to overfitting, but the model consistently outperforms the alternatives on data it hasn't seen.
+XGBoost's gap (0.2242) means it is still overfitting, even after tuning. What justifies choosing it anyway is that its test-set performance is the highest by a clear margin, *and* its cross-validation scores are both the highest (0.7359) and the most stable (std 0.0184).
 
-Random Forest is the clearest overfitting case (gap of 0.2714, the largest of the four, with train R² above 0.95 barely reacting to the cleaning), and it underperforms XGBoost on every test metric despite fitting the training data just as aggressively.
+Random Forest is the most consistent model across folds, with the lowest CV standard deviation (0.0157) of the four. Its test R² (0.6841) is also the second-best of the group. However, it is the clearest overfitting case of the four, as its gap (0.2714) is the largest, and still underperforms XGBoost on every test metric.
 
 
 ## 🔧 Possible improvements
