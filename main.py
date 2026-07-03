@@ -32,6 +32,7 @@ def main():
     X_train_processed, fitted_encoders = preprocess_data(X_train)
     X_test_processed, _ = preprocess_data(X_test, encoders=fitted_encoders)
 
+    fitted_encoders["train_columns"] = list(X_train_processed.columns)
     joblib.dump(fitted_encoders, "models/encoders.joblib")
     print("Fitted encoders saved as 'models/encoders.joblib'.")
 
