@@ -1,6 +1,6 @@
 import pandas as pd
 import joblib
-from src import RANDOM_STATE, clean_data, preprocess_data, split_data, scale_data, linear_regression, decision_tree_regression, random_forest_regression, xgboost_regression
+from src import RANDOM_STATE, clean_data, split_data, scale_data, linear_regression, decision_tree_regression, random_forest_regression, xgboost_regression, PropertyPreprocessor
 from src import cross_validate_model, evaluate_model, print_cross_validation_results, print_evaluation
 
 def main():
@@ -25,12 +25,12 @@ def main():
     X_train, X_test, y_train, y_test = split_data(df_cleaned, test_size=0.2, random_state=RANDOM_STATE)
 
     # 4. Preprocess the features
-    X_train_processed, fitted_encoders = preprocess_data(X_train)
-    X_test_processed, _ = preprocess_data(X_test, encoders=fitted_encoders)
+    preprocessor = PropertyPreprocessor()
+    X_train_processed = preprocessor.fit_transform(X_train)
+    X_test_processed = preprocessor.transform(X_test)
 
-    fitted_encoders["train_columns"] = list(X_train_processed.columns)
-    joblib.dump(fitted_encoders, "artifacts/encoders.joblib")
-    print("Fitted encoders saved as 'artifacts/encoders.joblib'.")
+    joblib.dump(preprocessor, "artifacts/preprocessor.joblib")
+    print("Fitted preprocessor saved as 'artifacts/preprocessor.joblib'.")
 
     # 5. Scale the data sets using StandardScaler
     X_train_scaled, X_test_scaled, scaler = scale_data(X_train_processed, X_test_processed)
