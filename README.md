@@ -23,7 +23,7 @@ During this project, I:
 ```
 immo-eliza-ml/
 ├── artifacts/
-│   └── encoders.joblib
+│   └── preprocessor.joblib
 ├── data/
 │   └── properties_database.csv
 ├── models/
